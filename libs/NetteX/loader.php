@@ -10,11 +10,11 @@ namespace {/**
  */
 
 error_reporting(E_ALL|E_STRICT);@set_magic_quotes_runtime(FALSE);iconv_set_encoding('internal_encoding','UTF-8');extension_loaded('mbstring')&&mb_internal_encoding('UTF-8');@header('X-Powered-By: NetteX Framework');define('NETTEX',TRUE);define('NETTEX_DIR',__DIR__);define('NETTEX_VERSION_ID',20000);define('NETTEX_PACKAGE','5.3');function
-callback($callback,$m=NULL){return($m===NULL&&$callback
+xcallback($callback,$m=NULL){return($m===NULL&&$callback
 instanceof
 NetteX\Callback)?$callback:new
 NetteX\Callback($callback,$m);}function
-dump($var){foreach(func_get_args()as$arg)NetteX\Debug::dump($arg);return$var;}}namespace NetteX{use
+xdump($var){foreach(func_get_args()as$arg)NetteX\Debug::dump($arg);return$var;}}namespace NetteX{use
 NetteX;interface
 IComponent{const
 NAME_SEPARATOR='-';function
@@ -254,7 +254,7 @@ call($_this,$name,$args){$class=new
 NetteX\Reflection\ClassReflection($_this);if($name===''){throw
 new\XMemberAccessException("Call to class '$class->name' method without name.");}if($class->hasEventProperty($name)){if(is_array($list=$_this->$name)||$list
 instanceof\Traversable){foreach($list
-as$handler){callback($handler)->invokeArgs($args);}}return
+as$handler){xcallback($handler)->invokeArgs($args);}}return
 NULL;}if($cb=$class->getExtensionMethod($name)){array_unshift($args,$_this);return$cb->invokeArgs($args);}throw
 new\XMemberAccessException("Call to undefined method $class->name::$name().");}static
 function&get($_this,$name){$class=get_class($_this);if($name===''){throw
@@ -689,7 +689,7 @@ NetteX\Templates\ITemplate||$value===NULL)){$class=get_class($value);throw
 new\UnexpectedValueException("Object returned by {$this->reflection->name}::createTemplate() must be instance of NetteX\\Templates\\ITemplate, '$class' given.");}$this->template=$value;}return$this->template;}protected
 function
 createTemplate(){$template=new
-NetteX\Templates\FileTemplate;$presenter=$this->getPresenter(FALSE);$template->onPrepareFilters[]=callback($this,'templatePrepareFilters');$template->control=$this;$template->presenter=$presenter;$template->user=NetteX\Environment::getUser();$template->baseUri=rtrim(NetteX\Environment::getVariable('baseUri',NULL),'/');$template->basePath=preg_replace('#https?://[^/]+#A','',$template->baseUri);if($presenter!==NULL&&$presenter->hasFlashSession()){$id=$this->getParamId('flash');$template->flashes=$presenter->getFlashSession()->$id;}if(!isset($template->flashes)||!is_array($template->flashes)){$template->flashes=array();}$template->registerHelper('escape','NetteX\Templates\TemplateHelpers::escapeHtml');$template->registerHelper('escapeUrl','rawurlencode');$template->registerHelper('stripTags','strip_tags');$template->registerHelper('nl2br','nl2br');$template->registerHelper('substr','iconv_substr');$template->registerHelper('repeat','str_repeat');$template->registerHelper('replaceRE','NetteX\String::replace');$template->registerHelper('implode','implode');$template->registerHelper('number','number_format');$template->registerHelperLoader('NetteX\Templates\TemplateHelpers::loader');return$template;}function
+NetteX\Templates\FileTemplate;$presenter=$this->getPresenter(FALSE);$template->onPrepareFilters[]=xcallback($this,'templatePrepareFilters');$template->control=$this;$template->presenter=$presenter;$template->user=NetteX\Environment::getUser();$template->baseUri=rtrim(NetteX\Environment::getVariable('baseUri',NULL),'/');$template->basePath=preg_replace('#https?://[^/]+#A','',$template->baseUri);if($presenter!==NULL&&$presenter->hasFlashSession()){$id=$this->getParamId('flash');$template->flashes=$presenter->getFlashSession()->$id;}if(!isset($template->flashes)||!is_array($template->flashes)){$template->flashes=array();}$template->registerHelper('escape','NetteX\Templates\TemplateHelpers::escapeHtml');$template->registerHelper('escapeUrl','rawurlencode');$template->registerHelper('stripTags','strip_tags');$template->registerHelper('nl2br','nl2br');$template->registerHelper('substr','iconv_substr');$template->registerHelper('repeat','str_repeat');$template->registerHelper('replaceRE','NetteX\String::replace');$template->registerHelper('implode','implode');$template->registerHelper('number','number_format');$template->registerHelperLoader('NetteX\Templates\TemplateHelpers::loader');return$template;}function
 templatePrepareFilters($template){$template->registerFilter(new
 NetteX\Templates\LatteFilter);}function
 getWidget($name){return$this->getComponent($name);}function
@@ -912,7 +912,7 @@ static($class);}function
 __toString(){return'Class '.$this->getName();}function
 hasEventProperty($name){if(preg_match('#^on[A-Z]#',$name)&&$this->hasProperty($name)){$rp=$this->getProperty($name);return$rp->isPublic()&&!$rp->isStatic();}return
 FALSE;}function
-setExtensionMethod($name,$callback){$l=&self::$extMethods[strtolower($name)];$l[strtolower($this->getName())]=callback($callback);$l['']=NULL;return$this;}function
+setExtensionMethod($name,$callback){$l=&self::$extMethods[strtolower($name)];$l[strtolower($this->getName())]=xcallback($callback);$l['']=NULL;return$this;}function
 getExtensionMethod($name){$class=strtolower($this->getName());$l=&self::$extMethods[strtolower($name)];if(empty($l)){return
 FALSE;}elseif(isset($l[''][$class])){return$l[''][$class];}$cl=$class;do{if(isset($l[$cl])){return$l[''][$class]=$l[$cl];}}while(($cl=strtolower(get_parent_class($cl)))!=='');foreach(class_implements($class)as$cl){$cl=strtolower($cl);if(isset($l[$cl])){return$l[''][$class]=$l[$cl];}}return$l[''][$class]=FALSE;}function
 getConstructor(){return($ref=parent::getConstructor())?MethodReflection::import($ref):NULL;}function
@@ -2597,9 +2597,9 @@ as$filter){$value=(string)$filter($value);}return$value===$this->translate($this
 setEmptyValue($value){$this->emptyValue=(string)$value;return$this;}final
 function
 getEmptyValue(){return$this->emptyValue;}function
-addFilter($filter){$this->filters[]=callback($filter);return$this;}function
+addFilter($filter){$this->filters[]=xcallback($filter);return$this;}function
 getControl(){$control=parent::getControl();foreach($this->getRules()as$rule){if($rule->type===Rule::VALIDATOR&&!$rule->isNegative&&($rule->operation===Form::LENGTH||$rule->operation===Form::MAX_LENGTH)){$control->maxlength=is_array($rule->arg)?$rule->arg[1]:$rule->arg;}}if($this->emptyValue!==''){$control->data('nette-empty-value',$this->translate($this->emptyValue));}return$control;}function
-addRule($operation,$message=NULL,$arg=NULL){if($operation===Form::FLOAT){$this->addFilter(callback(__CLASS__,'filterFloat'));}return
+addRule($operation,$message=NULL,$arg=NULL){if($operation===Form::FLOAT){$this->addFilter(xcallback(__CLASS__,'filterFloat'));}return
 parent::addRule($operation,$message,$arg);}static
 function
 validateMinLength(TextBase$control,$length){return
@@ -2634,7 +2634,7 @@ getControl(){$control=parent::getControl();$control->setText($this->getValue()==
 TextInput
 extends
 TextBase{function
-__construct($label=NULL,$cols=NULL,$maxLength=NULL){parent::__construct($label);$this->control->type='text';$this->control->size=$cols;$this->control->maxlength=$maxLength;$this->filters[]=callback($this,'sanitize');$this->value='';}function
+__construct($label=NULL,$cols=NULL,$maxLength=NULL){parent::__construct($label);$this->control->type='text';$this->control->size=$cols;$this->control->maxlength=$maxLength;$this->filters[]=xcallback($this,'sanitize');$this->value='';}function
 sanitize($value){if($this->control->maxlength&&NetteX\String::length($value)>$this->control->maxlength){$value=iconv_substr($value,0,$this->control->maxlength,'UTF-8');}return
 NetteX\String::trim(strtr($value,"\r\n",'  '));}function
 setType($type){$this->control->type=$type;return$this;}function
@@ -2764,8 +2764,8 @@ adjustOperation($rule){if(is_string($rule->operation)&&ord($rule->operation[0])>
 new\InvalidArgumentException("Unknown operation$operation for control '{$rule->control->name}'.");}}private
 function
 getCallback($rule){$op=$rule->operation;if(is_string($op)&&strncmp($op,':',1)===0){return
-callback(get_class($rule->control),self::VALIDATE_PREFIX.ltrim($op,':'));}else{return
-callback($op);}}static
+xcallback(get_class($rule->control),self::VALIDATE_PREFIX.ltrim($op,':'));}else{return
+xcallback($op);}}static
 function
 formatMessage($rule,$withValue){$message=$rule->message;if(!isset($message)){$message=self::$defaultMessages[$rule->operation];}if($translator=$rule->control->getForm()->getTranslator()){$message=$translator->translate($message,is_int($rule->arg)?$rule->arg:NULL);}$message=vsprintf(preg_replace('#%(name|label|value)#','%$0',$message),(array)$rule->arg);$message=str_replace('%name',$rule->control->getName(),$message);$message=str_replace('%label',$rule->control->translate($rule->control->caption),$message);if($withValue&&strpos($message,'%value')!==FALSE){$message=str_replace('%value',$rule->control->getValue(),$message);}return$message;}}}namespace NetteX\Loaders{use
 NetteX;use
@@ -2778,7 +2778,7 @@ __construct(){if(!extension_loaded('tokenizer')){throw
 new\Exception("PHP extension Tokenizer is not loaded.");}}function
 register(){$cache=$this->getCache();$key=$this->getKey();if(isset($cache[$key])){$this->list=$cache[$key];}else{$this->rebuild();}if(isset($this->list[strtolower(__CLASS__)])&&class_exists('NetteX\Loaders\NetteXLoader',FALSE)){NetteXLoader::getInstance()->unregister();}parent::register();}function
 tryLoad($type){$type=ltrim(strtolower($type),'\\');if(isset($this->list[$type][0])&&!is_file($this->list[$type][0])){unset($this->list[$type]);}if(!isset($this->list[$type])){$trace=debug_backtrace();$initiator=&$trace[2]['function'];if($initiator==='class_exists'||$initiator==='interface_exists'){$this->list[$type]=FALSE;if($this->autoRebuild&&$this->rebuilt){$this->getCache()->save($this->getKey(),$this->list,array(Cache::CONSTS=>'NetteX\Framework::REVISION'));}}if($this->autoRebuild&&!$this->rebuilt){$this->rebuild();}}if(isset($this->list[$type][0])){LimitedScope::load($this->list[$type][0]);self::$count++;}}function
-rebuild(){$this->getCache()->save($this->getKey(),callback($this,'_rebuildCallback'),array(Cache::CONSTS=>'NetteX\Framework::REVISION'));$this->rebuilt=TRUE;}function
+rebuild(){$this->getCache()->save($this->getKey(),xcallback($this,'_rebuildCallback'),array(Cache::CONSTS=>'NetteX\Framework::REVISION'));$this->rebuilt=TRUE;}function
 _rebuildCallback(){foreach($this->list
 as$pair){if($pair)$this->files[$pair[0]]=$pair[1];}foreach(array_unique($this->scanDirs)as$dir){$this->scanDirectory($dir);}$this->files=NULL;return$this->list;}function
 getIndexedClasses(){$res=array();foreach($this->list
@@ -3221,7 +3221,7 @@ removeDeny($roles=self::ALL,$resources=self::ALL,$privileges=self::ALL){$this->s
 function
 setRule($toAdd,$type,$roles,$resources,$privileges,$assertion=NULL){if($roles===self::ALL){$roles=array(self::ALL);}else{if(!is_array($roles)){$roles=array($roles);}foreach($roles
 as$role){$this->checkRole($role);}}if($resources===self::ALL){$resources=array(self::ALL);}else{if(!is_array($resources)){$resources=array($resources);}foreach($resources
-as$resource){$this->checkResource($resource);}}if($privileges===self::ALL){$privileges=array();}elseif(!is_array($privileges)){$privileges=array($privileges);}$assertion=$assertion?callback($assertion):NULL;if($toAdd){foreach($resources
+as$resource){$this->checkResource($resource);}}if($privileges===self::ALL){$privileges=array();}elseif(!is_array($privileges)){$privileges=array($privileges);}$assertion=$assertion?xcallback($assertion):NULL;if($toAdd){foreach($resources
 as$resource){foreach($roles
 as$role){$rules=&$this->getRules($resource,$role,TRUE);if(count($privileges)===0){$rules['allPrivileges']['type']=$type;$rules['allPrivileges']['assert']=$assertion;if(!isset($rules['byPrivilege'])){$rules['byPrivilege']=array();}}else{foreach($privileges
 as$privilege){$rules['byPrivilege'][$privilege]['type']=$type;$rules['byPrivilege'][$privilege]['assert']=$assertion;}}}}}else{foreach($resources
@@ -3282,7 +3282,7 @@ extends
 NetteX\Object
 implements
 ITemplate{public$warnOnUndefined=TRUE;public$onPrepareFilters=array();private$params=array();private$filters=array();private$helpers=array();private$helperLoaders=array();function
-registerFilter($callback){$callback=callback($callback);if(in_array($callback,$this->filters)){throw
+registerFilter($callback){$callback=xcallback($callback);if(in_array($callback,$this->filters)){throw
 new\XInvalidStateException("Filter '$callback' was registered twice.");}$this->filters[]=$callback;}final
 function
 getFilters(){return$this->filters;}function
@@ -3296,8 +3296,8 @@ compile($content,$label=NULL){if(!$this->filters){$this->onPrepareFilters($this)
 as$filter){$content=self::extractPhp($content,$blocks);$content=$filter($content);$content=strtr($content,$blocks);}}catch(\Exception$e){throw
 new\XInvalidStateException("Filter $filter: ".$e->getMessage().($label?" (in $label)":''),0,$e);}if($label){$content="<?php\n// $label\n//\n?>$content";}return
 self::optimizePhp($content);}function
-registerHelper($name,$callback){$this->helpers[strtolower($name)]=callback($callback);}function
-registerHelperLoader($callback){$this->helperLoaders[]=callback($callback);}final
+registerHelper($name,$callback){$this->helpers[strtolower($name)]=xcallback($callback);}function
+registerHelperLoader($callback){$this->helperLoaders[]=xcallback($callback);}final
 function
 getHelpers(){return$this->helpers;}function
 __call($name,$args){$lname=strtolower($name);if(!isset($this->helpers[$lname])){foreach($this->helperLoaders
@@ -3474,7 +3474,7 @@ macro($macro,$content='',$modifiers=''){if(func_num_args()===1){list(,$macro,$co
 FALSE;}}$content=substr($content,strlen($macro));}elseif(!isset($this->macros[$macro])){return
 FALSE;}$This=$this;return
 String::replace($this->macros[$macro],'#%(.*?)%#',function($m)use($This,$content,$modifiers){if($m[1]){return
-callback($m[1][0]===':'?array($This,substr($m[1],1)):$m[1])->invoke($content,$modifiers);}else{return$This->formatMacroArgs($content,'#');}});}function
+xcallback($m[1][0]===':'?array($This,substr($m[1],1)):$m[1])->invoke($content,$modifiers);}else{return$This->formatMacroArgs($content,'#');}});}function
 tagMacro($name,$attrs,$closing){$knownTags=array('include'=>'block','for'=>'each','block'=>'name','if'=>'cond','elseif'=>'cond');return$this->macro($closing?"/$name":$name,isset($knownTags[$name],$attrs[$knownTags[$name]])?$attrs[$knownTags[$name]]:preg_replace("#'([^\\'$]+)'#",'$1',substr(var_export($attrs,TRUE),8,-1)),isset($attrs['modifiers'])?$attrs['modifiers']:'');}function
 attrsMacro($code,$attrs,$closing){foreach($attrs
 as$name=>$content){if(substr($name,0,5)==='attr-'){if(!$closing){$pos=strrpos($code,'>');if($code[$pos-1]==='/')$pos--;$code=substr_replace($code,str_replace('@@',substr($name,5),$this->macro("@attr",$content)),$pos,0);}unset($attrs[$name]);}}$left=$right='';foreach($this->macros
@@ -3579,7 +3579,7 @@ function
 __construct(){throw
 new\LogicException("Cannot instantiate static class ".get_class($this));}static
 function
-loader($helper){$callback=callback('NetteX\Templates\TemplateHelpers',$helper);if($callback->isCallable()){return$callback;}$callback=callback('NetteX\String',$helper);if($callback->isCallable()){return$callback;}}static
+loader($helper){$callback=xcallback('NetteX\Templates\TemplateHelpers',$helper);if($callback->isCallable()){return$callback;}$callback=xcallback('NetteX\String',$helper);if($callback->isCallable()){return$callback;}}static
 function
 escapeHtml($s){if(is_object($s)&&($s
 instanceof
@@ -3689,7 +3689,7 @@ new\InvalidArgumentException("Service name must be a non-empty string, ".gettype
 new\InvalidArgumentException("Service named '$name' is singleton and therefore can not have options.");}return$this->registry[$lower];}elseif(isset($this->factories[$lower])){list($factory,$singleton,$defOptions)=$this->factories[$lower];if($singleton&&$options){throw
 new\InvalidArgumentException("Service named '$name' is singleton and therefore can not have options.");}elseif($defOptions){$options=$options?$options+$defOptions:$defOptions;}if(is_string($factory)&&strpos($factory,':')===FALSE){if(!class_exists($factory)){throw
 new
-AmbiguousServiceException("Cannot instantiate service '$name', class '$factory' not found.");}$service=new$factory;if($options&&method_exists($service,'setOptions')){$service->setOptions($options);}}else{$factory=callback($factory);if(!$factory->isCallable()){throw
+AmbiguousServiceException("Cannot instantiate service '$name', class '$factory' not found.");}$service=new$factory;if($options&&method_exists($service,'setOptions')){$service->setOptions($options);}}else{$factory=xcallback($factory);if(!$factory->isCallable()){throw
 new\XInvalidStateException("Cannot instantiate service '$name', handler '$factory' is not callable.");}$service=$factory($options);if(!is_object($service)){throw
 new
 AmbiguousServiceException("Cannot instantiate service '$name', value returned by '$factory' is not object.");}}if($singleton){$this->registry[$lower]=$service;unset($this->factories[$lower]);}return$service;}else{throw

@@ -140,9 +140,9 @@ class Generator extends NetteX\Object
 		});
 
 		// links
-		$template->registerHelper('namespaceLink', callback($this, 'formatNamespaceLink'));
-		$template->registerHelper('classLink', callback($this, 'formatClassLink'));
-		$template->registerHelper('sourceLink', callback($this, 'formatSourceLink'));
+		$template->registerHelper('namespaceLink', xcallback($this, 'formatNamespaceLink'));
+		$template->registerHelper('classLink', xcallback($this, 'formatClassLink'));
+		$template->registerHelper('sourceLink', xcallback($this, 'formatSourceLink'));
 
 		// docblock
 		$texy = new \TexyX;
@@ -184,7 +184,7 @@ class Generator extends NetteX\Object
 			}
 			return $res;
 		});
-		$template->registerHelper('resolveType', callback($model, 'resolveType'));
+		$template->registerHelper('resolveType', xcallback($model, 'resolveType'));
 
 		return $template;
 	}
