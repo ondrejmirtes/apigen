@@ -34,7 +34,7 @@ class Model extends NetteX\Object
 	 * @param  string  directory
 	 * @return void
 	 */
-	public function parse($dir)
+	public function parse($dir, $onlyNamespace = NULL)
 	{
 		$robot = new NetteX\Loaders\RobotLoader;
 		$robot->setCacheStorage(new NetteX\Caching\MemoryStorage);
@@ -46,7 +46,7 @@ class Model extends NetteX\Object
 		$this->classes = array();
 		foreach ($robot->getIndexedClasses() as $name => $foo) {
 			$class = new CustomClassReflection($name);
-			if (!$class->hasAnnotation('internal')) {
+			if (!$class->hasAnnotation('internal') && (!$onlyNamespace || $class->getTopLevelNamespaceName() == $onlyNamespace)) {
 				$this->classes[$name] = $class;
 			}
 		}

@@ -23,6 +23,12 @@ class CustomClassReflection extends NetteX\Reflection\ClassReflection
 {
 	private $package = NULL;
 
+	public function getTopLevelNamespaceName()
+	{
+		$name = $this->getName();
+		$arr = explode('\\', $name);
+		return isset($arr[0]) ? $arr[0] : $name;
+	}
 
 	/**
 	 * Returns namespace or package name.
